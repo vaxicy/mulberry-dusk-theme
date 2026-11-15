@@ -13,7 +13,7 @@
       "toolbar":                      [105, 33, 111],
       "tab_text":                     [255, 211, 213],
       "bookmark_text":                [255, 211, 213],
-      "ntp_background":               [255, 211, 213],
+      "ntp_background":               [254, 226, 227],
       "ntp_text":                     [84, 8, 99],
       "ntp_link":                     [122, 50, 104],
       "ntp_header":                   [228, 155, 166],
