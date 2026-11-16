@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vaxicy/mulberry-dusk-theme/main/store-assets/promo/1400x560.png" alt="Mulberry Dusk Theme promo" width="700">
+  <img src="https://raw.githubusercontent.com/vaxicy/mulberry-dusk-theme/main/store-assets/promo/1400x560.png?v=2" alt="Mulberry Dusk Theme promo" width="700">
 </p>
 
 ## Overview
@@ -53,7 +53,7 @@ One plum→pink ramp, four depths, plus a pale page:
 
 | Browser | Palette |
 |:-:|:-:|
-| <img src="https://raw.githubusercontent.com/vaxicy/mulberry-dusk-theme/main/store-assets/screenshots/en/screenshot-1-browser.png" width="420" alt="Mulberry Dusk New Tab"> | <img src="https://raw.githubusercontent.com/vaxicy/mulberry-dusk-theme/main/store-assets/screenshots/en/screenshot-2-palette.png" width="420" alt="Mulberry Dusk palette"> |
+| <img src="https://raw.githubusercontent.com/vaxicy/mulberry-dusk-theme/main/store-assets/screenshots/en/screenshot-1-browser.png?v=2" width="420" alt="Mulberry Dusk New Tab"> | <img src="https://raw.githubusercontent.com/vaxicy/mulberry-dusk-theme/main/store-assets/screenshots/en/screenshot-2-palette.png?v=2" width="420" alt="Mulberry Dusk palette"> |
 
 ## Installation
 

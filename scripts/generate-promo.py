@@ -192,40 +192,46 @@ def compose_window(size=(1400, 560)):
 def compose_dots(size=(440, 280)):
     W, H = size
     M = 28
-    bg = PAGE
+    # dark ground: the logo is pale berries on a pale disc, so on the petal page it
+    # blended into the background and left a faint halo (user report 2026-11-16)
+    bg = DEEP
     img = Image.new("RGB", (W, H), bg)
     d = ImageDraw.Draw(img)
+    for y in range(H):
+        d.line([(0, y), (W, y)], fill=lerp(DEEP, DEEP_END, y / max(1, H - 1)))
 
-    lsize = 60
+    # the icon sits on its own pale plate so it reads whatever its own colours are
+    plate = 78
+    px0, py0 = (W - plate) // 2, 18
+    d.rounded_rectangle([px0, py0, px0 + plate, py0 + plate], radius=22, fill=PAGE)
+    lsize = 56
     logo = Image.open("logo/logo.png").convert("RGBA").resize((lsize, lsize), Image.LANCZOS)
-    img.paste(logo, ((W - lsize) // 2, 22), logo)
+    img.paste(logo, (px0 + (plate - lsize) // 2, py0 + (plate - lsize) // 2), logo)
     d = ImageDraw.Draw(img)
 
     f_title, f_sub = font(27, True), font(12)
     title = "Mulberry Dusk"
-    d.text(((W - text_w(d, title, f_title)) // 2, 92), title, font=f_title, fill=INK_T)
+    d.text(((W - text_w(d, title, f_title)) // 2, 108), title, font=f_title, fill=SHELL)
     sub = "A deep plum and rose Chrome theme"
-    d.text(((W - text_w(d, sub, f_sub)) // 2, 126), sub, font=f_sub, fill=lerp(INK_T, bg, 0.32))
+    d.text(((W - text_w(d, sub, f_sub)) // 2, 142), sub, font=f_sub, fill=lerp(SHELL, DEEP, 0.30))
 
-    # five distinct tones ordered light -> dark so the row reads as a ramp and the
-    # two near-blacks do not clump together
-    # five tones that stay distinct on the cream ground: navy, periwinkle, lilac,
-    # deep ink, and the page tone itself (its hairline ring keeps it visible)
-    dots = [tuple(_C["ntp_text"]), TOOLBAR, BTN2, BTN, PAGE]
+    # tones that stay visible on the dark ground: page, blush, mauve, and two
+    # mid plums derived from the deep tones so nothing disappears into the ground
+    dots = [PAGE, BTN, BTN2, lerp(FRAME, BTN, 0.45), lerp(FRAME, PAGE, 0.30)]
     r, gap = 11, 14
     total = len(dots) * 2 * r + (len(dots) - 1) * gap
     x0 = (W - total) // 2
-    y0 = 172
+    y0 = 180
     shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     sd = ImageDraw.Draw(shadow)
     for i in range(len(dots)):
         cx = x0 + i * (2 * r + gap) + r
-        sd.ellipse([cx - r, y0 - r + 3, cx + r, y0 + r + 3], fill=INK_T + (34,))
+        sd.ellipse([cx - r, y0 - r + 3, cx + r, y0 + r + 3], fill=(0, 0, 0, 60))
     shadow = shadow.filter(ImageFilter.GaussianBlur(4))
     img = Image.alpha_composite(img.convert("RGBA"), shadow).convert("RGB")
     d = ImageDraw.Draw(img)
-    # hairline ring: the bone dot would otherwise disappear into the bone page
-    ring = lerp(INK_T, bg, 0.80)
+    # hairline ring keeps the pale dot from bleeding into the plate-free ground
+    ring = lerp(SHELL, DEEP, 0.35)
     for i, col in enumerate(dots):
         cx = x0 + i * (2 * r + gap) + r
         d.ellipse([cx - r, y0 - r, cx + r, y0 + r], fill=col, outline=ring, width=1)
@@ -233,11 +239,11 @@ def compose_dots(size=(440, 280)):
 
     f_cta = font(13, True)
     cw, ch = 128, 34
-    bx, by = (W - cw) // 2, 206
-    d.rounded_rectangle([bx, by, bx + cw, by + ch], radius=ch // 2, fill=DEEP)
+    bx, by = (W - cw) // 2, 214
+    d.rounded_rectangle([bx, by, bx + cw, by + ch], radius=ch // 2, fill=SHELL)
     label = "Try It Now"
     d.text((bx + (cw - text_w(d, label, f_cta)) // 2, by + (ch - f_cta.size) // 2 - 3),
-           label, font=f_cta, fill=SHELL)
+           label, font=f_cta, fill=DEEP)
     assert by + ch <= H - M, "CTA too close to the bottom"
     return img, {"dots": (x0, y0 - r, total, 2 * r), "cta": (bx, by, cw, ch)}
 
