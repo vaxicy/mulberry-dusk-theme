@@ -76,10 +76,10 @@ def main():
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
 
-    logo = Image.open("logo/logo.png").convert("RGBA").resize((84, 84), Image.LANCZOS)
-    img.paste(logo, (MARGIN, 62), logo)
-    d.text((MARGIN + 108, 72), "Mulberry Dusk", font=font(52, True), fill=TEXT_MAIN)
-    d.text((MARGIN + 110, 134), "A mulberry palette — plum, mauve, rose and petal",
+    # no icon in the header: its darkest berry is the same tone as this dark
+    # background, so only two of the three berries would show
+    d.text((MARGIN, 72), "Mulberry Dusk", font=font(52, True), fill=TEXT_MAIN)
+    d.text((MARGIN + 2, 134), "A mulberry palette — plum, mauve, rose and petal",
            font=font(19), fill=TEXT_DIM)
 
     gap = 22

@@ -159,19 +159,16 @@ def compose_window(size=(1400, 560)):
     group_right = card_mid + step + r_disc
     assert abs((group_left - wx0) - (wx1 - group_right)) < 1.0, "disc group not centred in card"
 
-    # ---- left column
-    lg = Image.open("logo/logo.png").convert("RGBA").resize((120, 120), Image.LANCZOS)
-    img.paste(lg, (M, 78), lg)
-    d = ImageDraw.Draw(img)
-
-    f_title = font(58, True)
-    d.text((M + 144, 96), "Mulberry Dusk", font=f_title, fill=SHELL)
-    assert M + 144 + text_w(d, "Mulberry Dusk", f_title) <= wx0 - 30, "title collides with card"
-    d.text((M + 146, 174), "A deep plum and rose Chrome theme", font=font(21),
+    # ---- left column (no icon here: the icon's dark berry would vanish into this
+    # dark ground, and the wordmark alone reads stronger at promo scale)
+    f_title = font(64, True)
+    d.text((M, 96), "Mulberry Dusk", font=f_title, fill=SHELL)
+    assert M + text_w(d, "Mulberry Dusk", f_title) <= wx0 - 30, "title collides with card"
+    d.text((M + 2, 182), "A deep plum and rose Chrome theme", font=font(21),
            fill=lerp(SHELL, DEEP, 0.26))
 
     f_chip = font(15)
-    cx, cy = M + 146, 214
+    cx, cy = M + 2, 222
     for lab in ("Solid colors", "Plum & rose", "Easy on the eyes"):
         # cream pill + plum ink: cream-on-cream would be invisible on the dark ground
         cx += draw_chip(d, cx, cy, 34, lab, f_chip, SHELL, DEEP) + 12
@@ -192,46 +189,39 @@ def compose_window(size=(1400, 560)):
 def compose_dots(size=(440, 280)):
     W, H = size
     M = 28
-    # dark ground: the logo is pale berries on a pale disc, so on the petal page it
-    # blended into the background and left a faint halo (user report 2026-11-16)
-    bg = DEEP
+    # light page ground and NO plate: the icon itself is now disc-free, so there is
+    # no pale ring to blend with the background (user request 2026-11-16)
+    bg = PAGE
     img = Image.new("RGB", (W, H), bg)
     d = ImageDraw.Draw(img)
-    for y in range(H):
-        d.line([(0, y), (W, y)], fill=lerp(DEEP, DEEP_END, y / max(1, H - 1)))
 
-    # the icon sits on its own pale plate so it reads whatever its own colours are
-    plate = 78
-    px0, py0 = (W - plate) // 2, 18
-    d.rounded_rectangle([px0, py0, px0 + plate, py0 + plate], radius=22, fill=PAGE)
-    lsize = 56
+    lsize = 76
     logo = Image.open("logo/logo.png").convert("RGBA").resize((lsize, lsize), Image.LANCZOS)
-    img.paste(logo, (px0 + (plate - lsize) // 2, py0 + (plate - lsize) // 2), logo)
+    img.paste(logo, ((W - lsize) // 2, 20), logo)
     d = ImageDraw.Draw(img)
 
     f_title, f_sub = font(27, True), font(12)
     title = "Mulberry Dusk"
-    d.text(((W - text_w(d, title, f_title)) // 2, 108), title, font=f_title, fill=SHELL)
+    d.text(((W - text_w(d, title, f_title)) // 2, 108), title, font=f_title, fill=INK_T)
     sub = "A deep plum and rose Chrome theme"
-    d.text(((W - text_w(d, sub, f_sub)) // 2, 142), sub, font=f_sub, fill=lerp(SHELL, DEEP, 0.30))
+    d.text(((W - text_w(d, sub, f_sub)) // 2, 142), sub, font=f_sub, fill=lerp(INK_T, bg, 0.32))
 
-    # tones that stay visible on the dark ground: page, blush, mauve, and two
-    # mid plums derived from the deep tones so nothing disappears into the ground
-    dots = [PAGE, BTN, BTN2, lerp(FRAME, BTN, 0.45), lerp(FRAME, PAGE, 0.30)]
+    # five tones, dark -> light, all visible on the petal page
+    dots = [tuple(_C["ntp_text"]), TOOLBAR, BTN2, BTN, PAGE]
     r, gap = 11, 14
     total = len(dots) * 2 * r + (len(dots) - 1) * gap
     x0 = (W - total) // 2
-    y0 = 180
+    y0 = 178
     shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     sd = ImageDraw.Draw(shadow)
     for i in range(len(dots)):
         cx = x0 + i * (2 * r + gap) + r
-        sd.ellipse([cx - r, y0 - r + 3, cx + r, y0 + r + 3], fill=(0, 0, 0, 60))
+        sd.ellipse([cx - r, y0 - r + 3, cx + r, y0 + r + 3], fill=INK_T + (34,))
     shadow = shadow.filter(ImageFilter.GaussianBlur(4))
     img = Image.alpha_composite(img.convert("RGBA"), shadow).convert("RGB")
     d = ImageDraw.Draw(img)
-    # hairline ring keeps the pale dot from bleeding into the plate-free ground
-    ring = lerp(SHELL, DEEP, 0.35)
+    # hairline ring keeps the pale dot from disappearing into the petal page
+    ring = lerp(INK_T, bg, 0.80)
     for i, col in enumerate(dots):
         cx = x0 + i * (2 * r + gap) + r
         d.ellipse([cx - r, y0 - r, cx + r, y0 + r], fill=col, outline=ring, width=1)
@@ -239,11 +229,11 @@ def compose_dots(size=(440, 280)):
 
     f_cta = font(13, True)
     cw, ch = 128, 34
-    bx, by = (W - cw) // 2, 214
-    d.rounded_rectangle([bx, by, bx + cw, by + ch], radius=ch // 2, fill=SHELL)
+    bx, by = (W - cw) // 2, 212
+    d.rounded_rectangle([bx, by, bx + cw, by + ch], radius=ch // 2, fill=DEEP)
     label = "Try It Now"
     d.text((bx + (cw - text_w(d, label, f_cta)) // 2, by + (ch - f_cta.size) // 2 - 3),
-           label, font=f_cta, fill=DEEP)
+           label, font=f_cta, fill=SHELL)
     assert by + ch <= H - M, "CTA too close to the bottom"
     return img, {"dots": (x0, y0 - r, total, 2 * r), "cta": (bx, by, cw, ch)}
 

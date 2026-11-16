@@ -74,11 +74,9 @@ SVG_01 = svg_open("""
 %s
 %s
 %s
-%s
-""" % (circle(128, 128, 96, PALE),
-       circle(104, 116, 34, PLUM),
-       circle(152, 134, 26, MAUVE),
-       circle(120, 168, 20, ROSE)))
+""" % (circle(102, 104, 48, PLUM),
+       circle(160, 132, 36, MAUVE),
+       circle(118, 178, 28, ROSE)))
 
 SVG_02 = svg_open("""
 %s
